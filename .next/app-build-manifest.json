@@ -6,6 +6,11 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
+    "/equipes/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/equipes/[id]/page.js"
+    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -16,10 +21,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/equipes/page.js"
     ],
-    "/calendrier/page": [
+    "/joueurs/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/calendrier/page.js"
+      "static/chunks/app/joueurs/page.js"
     ],
     "/resultats/page": [
       "static/chunks/webpack.js",
@@ -31,10 +36,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/classement/page.js"
     ],
-    "/joueurs/page": [
+    "/calendrier/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/joueurs/page.js"
+      "static/chunks/app/calendrier/page.js"
     ]
   }
 }

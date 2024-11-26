@@ -6,7 +6,8 @@ export interface Player {
   number: number;
   teamId: string;
   team: string;  // Team name
-  position: string;
+  positionOffensive: string;
+  positionDefensive: string;
   photo?: string;
   age: number;
   experience: string;

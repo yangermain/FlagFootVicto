@@ -22,7 +22,8 @@ const PlayerList = ({ players, isExpanded }: { players: Player[], isExpanded: bo
             <tr className="bg-gray-100 border-b border-gray-200">
               <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">#</th>
               <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Nom</th>
-              <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Position</th>
+              <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Position Off.</th>
+              <th className="py-3 px-4 text-left text-sm font-semibold text-gray-600">Position Déf.</th>
             </tr>
           </thead>
           <tbody>
@@ -30,7 +31,8 @@ const PlayerList = ({ players, isExpanded }: { players: Player[], isExpanded: bo
               <tr key={player.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                 <td className="py-3 px-4 font-medium">{player.number}</td>
                 <td className="py-3 px-4">{player.name}</td>
-                <td className="py-3 px-4">{player.position}</td>
+                <td className="py-3 px-4">{player.positionOffensive}</td>
+                <td className="py-3 px-4">{player.positionDefensive}</td>
               </tr>
             ))}
           </tbody>
@@ -40,6 +42,21 @@ const PlayerList = ({ players, isExpanded }: { players: Player[], isExpanded: bo
   );
 };
 
+const StatBox = ({ label, value, textColor = '' }: { label: string, value: string | number, textColor?: string }) => (
+  <div className="bg-white rounded-lg p-4 transition-all duration-200 hover:shadow-md border border-gray-100 hover:border-gray-200">
+    <div className="flex flex-col h-full">
+      <div className="mb-2">
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</p>
+      </div>
+      <div className="flex-grow flex items-end justify-end">
+        <p className={`text-3xl font-bold tabular-nums leading-none ${textColor}`}>
+          {value}
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
 export default function Teams() {
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
 
@@ -48,70 +65,86 @@ export default function Teams() {
   };
 
   return (
-    <div className="py-16">
-      <div className="container">
+    <div className="py-16 bg-gray-50 min-h-screen">
+      <div className="container mx-auto px-4 max-w-7xl">
         <h1 className="text-4xl font-bold mb-12">Nos Équipes</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {teamsData.map(team => {
             const teamPlayers = players.filter(p => p.team === team.name);
             const isExpanded = expandedTeam === team.id;
+            const differential = (team.stats?.pointsFor || 0) - (team.stats?.pointsAgainst || 0);
             
             return (
-              <div key={team.id} className="card relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: team.primaryColor }}></div>
-                <div className="pl-6">
-                  <div className="flex items-center mb-6">
-                    <JerseyIcon color={team.primaryColor} />
-                    <h3 className="text-xl font-bold">{team.name}</h3>
-                  </div>
+              <div key={team.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="relative">
+                  <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: team.primaryColor }}></div>
+                  <div className="pl-8 pr-6 py-6">
+                    <div className="flex items-center mb-6">
+                      <JerseyIcon color={team.primaryColor} />
+                      <h3 className="text-2xl font-bold">{team.name}</h3>
+                    </div>
 
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div>
-                      <p className="text-gray-600">Joueurs</p>
-                      <p className="text-2xl font-bold">{teamPlayers.length}</p>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                      <StatBox 
+                        label="Joueurs" 
+                        value={teamPlayers.length} 
+                      />
+                      <StatBox 
+                        label="Victoires" 
+                        value={team.stats?.wins || 0} 
+                      />
+                      <StatBox 
+                        label="Défaites" 
+                        value={team.stats?.losses || 0} 
+                      />
+                      <StatBox 
+                        label="Points Pour" 
+                        value={team.stats?.pointsFor || 0} 
+                      />
+                      <StatBox 
+                        label="Points Contre" 
+                        value={team.stats?.pointsAgainst || 0} 
+                      />
+                      <StatBox 
+                        label="Différentiel" 
+                        value={`${differential >= 0 ? '+' : ''}${differential}`}
+                        textColor={differential >= 0 ? 'text-primary' : 'text-red-600'}
+                      />
                     </div>
-                    <div>
-                      <p className="text-gray-600">Victoires</p>
-                      <p className="text-2xl font-bold">{team.stats?.wins || 0}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-600">Défaites</p>
-                      <p className="text-2xl font-bold">{team.stats?.losses || 0}</p>
-                    </div>
-                  </div>
 
-                  <div className="flex gap-4">
-                    <button 
-                      onClick={() => toggleTeam(team.id)}
-                      className="btn-secondary inline-flex items-center"
-                    >
-                      {isExpanded ? 'Masquer l\'équipe' : "Voir l'équipe"}
-                      <svg 
-                        className={`ml-2 w-4 h-4 transform transition-transform ${isExpanded ? 'rotate-90' : ''}`} 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
+                    <div className="flex gap-4 mt-8">
+                      <button 
+                        onClick={() => toggleTeam(team.id)}
+                        className="btn-secondary inline-flex items-center hover:bg-gray-100 transition-colors"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
+                        {isExpanded ? 'Masquer l\'équipe' : "Voir l'équipe"}
+                        <svg 
+                          className={`ml-2 w-4 h-4 transform transition-transform ${isExpanded ? 'rotate-90' : ''}`} 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
 
-                    <a 
-                      href={`/joueurs?team=${encodeURIComponent(team.name)}`}
-                      className="btn-primary inline-flex items-center"
-                      style={{ 
-                        backgroundColor: team.primaryColor,
-                      }}
-                    >
-                      Plus de détails
-                      <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </a>
+                      <a 
+                        href={`/joueurs?team=${encodeURIComponent(team.name)}`}
+                        className="btn-primary inline-flex items-center transition-opacity hover:opacity-90"
+                        style={{ 
+                          backgroundColor: team.primaryColor,
+                        }}
+                      >
+                        Plus de détails
+                        <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </a>
+                    </div>
+
+                    <PlayerList players={teamPlayers} isExpanded={isExpanded} />
                   </div>
-
-                  <PlayerList players={teamPlayers} isExpanded={isExpanded} />
                 </div>
               </div>
             );

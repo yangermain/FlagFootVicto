@@ -1,4 +1,4 @@
-// File: G:\code\Repos\try1000\flag-football-league\src\app\resultats\page.tsx
+// File: G:\code\FlagFootVicto\src\app\resultats\page.tsx
 import * as entry from '../../../../src/app/resultats/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

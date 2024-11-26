@@ -1,7 +1,8 @@
 {
   "/equipes/page": "app/equipes/page.js",
-  "/calendrier/page": "app/calendrier/page.js",
+  "/joueurs/page": "app/joueurs/page.js",
   "/resultats/page": "app/resultats/page.js",
   "/classement/page": "app/classement/page.js",
-  "/joueurs/page": "app/joueurs/page.js"
+  "/page": "app/page.js",
+  "/calendrier/page": "app/calendrier/page.js"
 }

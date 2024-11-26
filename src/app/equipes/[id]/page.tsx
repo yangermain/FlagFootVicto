@@ -5,7 +5,8 @@ interface Player {
   id: string;
   name: string;
   number: number;
-  position: string;
+  positionOffensive: string;
+  positionDefensive: string;
   stats: {
     touchdowns: number;
     interceptions: number;
@@ -73,7 +74,8 @@ async function getTeamData(id: string): Promise<TeamData> {
       id: `${id}-${i + 1}`,
       name: `${playerPrefix} ${i + 1}`,
       number: i + 1,
-      position: i === 0 ? 'Quarterback' : i < 4 ? 'Receveur' : 'Défenseur',
+      positionOffensive: i === 0 ? 'QB' : i < 4 ? 'Rec' : 'Rush',
+      positionDefensive: i === 0 ? 'S' : i < 4 ? 'CB' : 'LB',
       stats: {
         touchdowns: Math.floor(Math.random() * 10),
         interceptions: Math.floor(Math.random() * 5),
@@ -93,6 +95,7 @@ export default async function TeamPage({ params }: Props) {
   try {
     const team = await getTeamData(params.id);
     const playerLabel = team.category === 'feminin' ? 'Joueuses' : 'Joueurs';
+    const differential = team.stats.pointsFor - team.stats.pointsAgainst;
 
     return (
       <div className="py-16">
@@ -102,7 +105,7 @@ export default async function TeamPage({ params }: Props) {
           {/* Statistiques de l'équipe */}
           <div className="card mb-12">
             <h2 className="text-2xl font-montserrat font-bold mb-6">Statistiques de l'équipe</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               <div>
                 <p className="text-gray-600">Victoires</p>
                 <p className="text-2xl font-bold text-primary">{team.stats.wins}</p>
@@ -119,37 +122,47 @@ export default async function TeamPage({ params }: Props) {
                 <p className="text-gray-600">Points Contre</p>
                 <p className="text-2xl font-bold text-primary">{team.stats.pointsAgainst}</p>
               </div>
+              <div>
+                <p className="text-gray-600">Différentiel</p>
+                <p className={`text-2xl font-bold ${differential >= 0 ? 'text-primary' : 'text-red-600'}`}>
+                  {differential >= 0 ? '+' : ''}{differential}
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Liste des joueurs */}
           <div>
             <h2 className="text-2xl font-montserrat font-bold mb-6">{playerLabel}</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full bg-white rounded-lg shadow">
-                <thead className="bg-primary text-white">
-                  <tr>
-                    <th className="py-3 px-4 text-left">Numéro</th>
-                    <th className="py-3 px-4 text-left">Nom</th>
-                    <th className="py-3 px-4 text-left">Position</th>
-                    <th className="py-3 px-4 text-center">Touchdowns</th>
-                    <th className="py-3 px-4 text-center">Interceptions</th>
-                    <th className="py-3 px-4 text-center">Passes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {team.players.map((player) => (
-                    <tr key={player.id} className="border-b hover:bg-gray-50">
-                      <td className="py-3 px-4">{player.number}</td>
-                      <td className="py-3 px-4">{player.name}</td>
-                      <td className="py-3 px-4">{player.position}</td>
-                      <td className="py-3 px-4 text-center">{player.stats.touchdowns}</td>
-                      <td className="py-3 px-4 text-center">{player.stats.interceptions}</td>
-                      <td className="py-3 px-4 text-center">{player.stats.passes}</td>
+            <div className="overflow-x-auto shadow rounded-lg">
+              <div className="inline-block min-w-full align-middle">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-primary text-white">
+                    <tr>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap min-w-[80px]">Numéro</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap min-w-[120px]">Nom</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap min-w-[100px]">Position Off.</th>
+                      <th scope="col" className="px-4 py-3 text-left text-sm font-semibold whitespace-nowrap min-w-[100px]">Position Déf.</th>
+                      <th scope="col" className="px-4 py-3 text-center text-sm font-semibold whitespace-nowrap min-w-[100px]">Touchdowns</th>
+                      <th scope="col" className="px-4 py-3 text-center text-sm font-semibold whitespace-nowrap min-w-[100px]">Interceptions</th>
+                      <th scope="col" className="px-4 py-3 text-center text-sm font-semibold whitespace-nowrap min-w-[80px]">Passes</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {team.players.map((player) => (
+                      <tr key={player.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm whitespace-nowrap">{player.number}</td>
+                        <td className="px-4 py-3 text-sm whitespace-nowrap">{player.name}</td>
+                        <td className="px-4 py-3 text-sm whitespace-nowrap">{player.positionOffensive}</td>
+                        <td className="px-4 py-3 text-sm whitespace-nowrap">{player.positionDefensive}</td>
+                        <td className="px-4 py-3 text-sm text-center whitespace-nowrap">{player.stats.touchdowns}</td>
+                        <td className="px-4 py-3 text-sm text-center whitespace-nowrap">{player.stats.interceptions}</td>
+                        <td className="px-4 py-3 text-sm text-center whitespace-nowrap">{player.stats.passes}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

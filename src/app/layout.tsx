@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import Navigation from './components/Navigation'
 
 export const metadata: Metadata = {
   title: 'FLAGFOOTVICTO',
@@ -14,30 +15,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body>
-        <header className="bg-primary text-white">
-          <nav className="container py-4">
-            <div className="flex items-center justify-between">
-              <a href="/">
-                <h1 className="text-2xl font-montserrat font-bold cursor-pointer">FLAGFOOTVICTO</h1>
-              </a>
-              <ul className="hidden md:flex space-x-6">
-                <li><a href="/" className="hover:text-gray-200">Accueil</a></li>
-                <li><a href="/equipes" className="hover:text-gray-200">Équipes</a></li>
-                <li><a href="/calendrier" className="hover:text-gray-200">Calendrier</a></li>
-                <li><a href="/resultats" className="hover:text-gray-200">Résultats</a></li>
-                <li><a href="/classement" className="hover:text-gray-200">Classement</a></li>
-                <li><a href="/joueurs" className="hover:text-gray-200">Joueurs</a></li>
-                <li><a href="/galerie" className="hover:text-gray-200">Galerie</a></li>
-                <li><a href="/a-propos" className="hover:text-gray-200">À propos</a></li>
-              </ul>
-              <button className="md:hidden">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              </button>
-            </div>
-          </nav>
-        </header>
+        <Navigation />
         <main>
           {children}
         </main>
