@@ -143,7 +143,7 @@ export default function Communaute() {
         <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">Communauté</h1>
 
         {/* Navigation tabs */}
-        <div className="flex justify-center space-x-4 mb-8">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           <button
             onClick={() => setActiveTab('arbitres')}
             className={`px-4 py-2 rounded-lg ${
@@ -428,14 +428,25 @@ export default function Communaute() {
           )}
 
           {activeTab === 'plays' && (
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Plays Exemples</h2>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold mb-4">Dessinez vos jeux</h3>
-                  <p className="text-gray-600 mb-4">Utilisez le canvas ci-dessous pour dessiner et visualiser vos jeux. Vous pouvez ajuster la couleur et l'épaisseur du trait, et effacer le dessin si nécessaire.</p>
-                  <PlayDrawer />
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Plays Exemples</h2>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4">Dessinez vos jeux</h3>
+                    <p className="text-gray-600 mb-4">
+                      Utilisez le canvas ci-dessous pour dessiner et visualiser vos jeux. 
+                      Vous pouvez ajuster la couleur et l'épaisseur du trait, et effacer le dessin si nécessaire.
+                    </p>
+                  </div>
                 </div>
+              </div>
+              
+              <div className="bg-gray-50 px-4 py-6">
+                <PlayDrawer />
+              </div>
+
+              <div className="p-6 bg-white">
                 <div className="mt-8">
                   <h3 className="text-xl font-semibold mb-4">Exemples de jeux de base</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
