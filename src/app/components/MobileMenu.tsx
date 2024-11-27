@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { navigationItems } from './navigationData'
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Handle body scroll locking
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -59,16 +59,7 @@ export default function MobileMenu() {
         <div className="flex flex-col h-full pt-16">
           <nav className="flex-1 px-4 pb-4 overflow-y-auto">
             <ul className="space-y-1">
-              {[
-                { href: '/', label: 'Accueil' },
-                { href: '/equipes', label: 'Équipes' },
-                { href: '/calendrier', label: 'Calendrier' },
-                { href: '/resultats', label: 'Résultats' },
-                { href: '/classement', label: 'Classement' },
-                { href: '/joueurs', label: 'Joueurs' },
-                { href: '/galerie', label: 'Galerie' },
-                { href: '/a-propos', label: 'À propos' }
-              ].map(({ href, label }) => (
+              {navigationItems.map(({ href, label }) => (
                 <li key={href}>
                   <Link
                     href={href}

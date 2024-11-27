@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { players } from '../data/players'
 import { teams as teamsData } from '../data/teams'
 import { Player, Team as TeamType } from '../data/types'
+import Link from 'next/link'
 
 const JerseyIcon = ({ color }: { color: string }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill={color} className="inline-block mr-3">
@@ -82,7 +83,9 @@ export default function Teams() {
                   <div className="pl-8 pr-6 py-6">
                     <div className="flex items-center mb-6">
                       <JerseyIcon color={team.primaryColor} />
-                      <h3 className="text-2xl font-bold">{team.name}</h3>
+                      <Link href={`/equipes/${team.id}`} className="text-2xl font-bold hover:text-primary transition-colors">
+                        {team.name}
+                      </Link>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
