@@ -13,30 +13,18 @@ const PlayDrawer = () => {
   const [startPos, setStartPos] = useState<{ x: number; y: number } | null>(null);
   const [backgroundColor, setBackgroundColor] = useState('#ffffff');
   const [routeType, setRouteType] = useState('go');
-  const [canvasSize, setCanvasSize] = useState({ width: 600, height: 800 });
+  const [canvasSize, setCanvasSize] = useState({ width: 600, height: 400 });
+  const [baseCanvas, setBaseCanvas] = useState<ImageData | null>(null);
 
-  // Handle responsive canvas sizing
   useEffect(() => {
     const updateCanvasSize = () => {
       if (containerRef.current) {
         const container = containerRef.current;
-        // Calculate available height (viewport height minus space for controls and padding)
-        const availableHeight = window.innerHeight - 300; // Reserve space for controls
-        // Calculate width based on container
-        const maxWidth = Math.min(container.clientWidth - 32, 1200);
+        const maxWidth = Math.min(container.clientWidth - 32, 900);
+        const aspectRatio = 1.5;
         
-        // Use a more compact aspect ratio
-        const aspectRatio = 1.2; // This creates a more square-like field
-        
-        // Determine dimensions based on available space
         let width = maxWidth;
-        let height = width * aspectRatio;
-        
-        // If height exceeds available space, scale down proportionally
-        if (height > availableHeight) {
-          height = availableHeight;
-          width = height / aspectRatio;
-        }
+        let height = width / aspectRatio;
         
         setCanvasSize({
           width: Math.floor(width),
@@ -157,15 +145,18 @@ const PlayDrawer = () => {
   };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const pos = getMousePos(e);
-    setStartPos(pos);
-    setIsDrawing(true);
-
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    const pos = getMousePos(e);
+    setStartPos(pos);
+    setIsDrawing(true);
+
+    // Save the current canvas state
+    setBaseCanvas(ctx.getImageData(0, 0, canvas.width, canvas.height));
 
     if (selectedTool === 'pen' || selectedTool === 'eraser') {
       ctx.beginPath();
@@ -177,7 +168,7 @@ const PlayDrawer = () => {
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !startPos) return;
+    if (!isDrawing || !startPos || !baseCanvas) return;
     
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -191,15 +182,8 @@ const PlayDrawer = () => {
       ctx.lineTo(currentPos.x, currentPos.y);
       ctx.stroke();
     } else {
-      const tempCanvas = document.createElement('canvas');
-      tempCanvas.width = canvas.width;
-      tempCanvas.height = canvas.height;
-      const tempCtx = tempCanvas.getContext('2d');
-      if (!tempCtx) return;
-
-      tempCtx.drawImage(canvas, 0, 0);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(tempCanvas, 0, 0);
+      // Restore the base canvas before drawing the preview
+      ctx.putImageData(baseCanvas, 0, 0);
 
       if (selectedTool === 'line') {
         ctx.beginPath();
@@ -232,6 +216,7 @@ const PlayDrawer = () => {
   const stopDrawing = () => {
     setIsDrawing(false);
     setStartPos(null);
+    setBaseCanvas(null);
   };
 
   const clearCanvas = () => {
@@ -302,15 +287,15 @@ const PlayDrawer = () => {
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center w-full max-w-[1200px] mx-auto px-4 py-4">
+    <div ref={containerRef} className="flex flex-col items-center w-full max-w-[900px] mx-auto">
       <div className="w-full bg-white rounded-lg shadow-lg p-4 mb-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div className="flex flex-wrap justify-center gap-4 mb-4">
           <div className="flex items-center space-x-3">
             <label className="text-sm font-semibold text-gray-700 whitespace-nowrap">Outils:</label>
             <select 
               value={selectedTool}
               onChange={(e) => setSelectedTool(e.target.value as Tool)}
-              className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="pen">Crayon</option>
               <option value="line">Ligne</option>
@@ -329,7 +314,7 @@ const PlayDrawer = () => {
               <select
                 value={routeType}
                 onChange={(e) => setRouteType(e.target.value)}
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="go">Go</option>
                 <option value="slant">Slant</option>
@@ -346,7 +331,7 @@ const PlayDrawer = () => {
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
-              className="w-10 h-10 rounded border border-gray-300 p-1"
+              className="w-8 h-8 rounded border border-gray-300 p-0"
             />
           </div>
 
@@ -358,12 +343,12 @@ const PlayDrawer = () => {
               max="10"
               value={lineWidth}
               onChange={(e) => setLineWidth(Number(e.target.value))}
-              className="flex-1"
+              className="w-24"
             />
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex justify-center gap-2">
           <button
             onClick={drawField}
             className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-200 shadow-sm text-sm font-medium"
@@ -385,7 +370,7 @@ const PlayDrawer = () => {
         </div>
       </div>
 
-      <div className="text-sm text-gray-600 mb-2 italic">
+      <div className="text-sm text-gray-600 mb-2 italic text-center">
         * Clic gauche pour joueur offensif (X), clic droit pour joueur défensif (•)
       </div>
 

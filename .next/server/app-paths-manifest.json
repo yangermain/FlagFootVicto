@@ -1,6 +1,10 @@
 {
   "/page": "app/page.js",
-  "/equipes/page": "app/equipes/page.js",
+  "/communaute/page": "app/communaute/page.js",
   "/joueurs/page": "app/joueurs/page.js",
-  "/resultats/page": "app/resultats/page.js"
+  "/classement/page": "app/classement/page.js",
+  "/equipes/[id]/page": "app/equipes/[id]/page.js",
+  "/equipes/page": "app/equipes/page.js",
+  "/resultats/page": "app/resultats/page.js",
+  "/calendrier/page": "app/calendrier/page.js"
 }

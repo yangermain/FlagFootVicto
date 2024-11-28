@@ -18,6 +18,19 @@ interface Week {
   slots: Slot[];
 }
 
+const formatDate = (dateStr: string) => {
+  const months: { [key: string]: string } = {
+    'Dec': 'décembre',
+    'Jan': 'janvier',
+    'Feb': 'février',
+    'Mar': 'mars'
+  };
+  
+  const [day, month, year] = dateStr.split('-');
+  const monthName = months[month];
+  return `${parseInt(day)} ${monthName} ${year}`;
+};
+
 const weeks: Week[] = [
   { 
     number: 1, 
@@ -121,19 +134,6 @@ const weeks: Week[] = [
   }
 ];
 
-const formatDate = (dateStr: string) => {
-  const months = {
-    'Dec': 'décembre',
-    'Jan': 'janvier',
-    'Feb': 'février',
-    'Mar': 'mars'
-  };
-  
-  const [day, month, year] = dateStr.split('-');
-  const monthName = months[month as keyof typeof months];
-  return `${parseInt(day)} ${monthName} ${year}`;
-};
-
 export default function Communaute() {
   const [activeTab, setActiveTab] = useState('arbitres');
 
@@ -192,7 +192,7 @@ export default function Communaute() {
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            Plays Exemples
+            Playbook
           </button>
         </div>
 
@@ -430,44 +430,11 @@ export default function Communaute() {
           {activeTab === 'plays' && (
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
               <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Plays Exemples</h2>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-4">Dessinez vos jeux</h3>
-                    <p className="text-gray-600 mb-4">
-                      Utilisez le canvas ci-dessous pour dessiner et visualiser vos jeux. 
-                      Vous pouvez ajuster la couleur et l'épaisseur du trait, et effacer le dessin si nécessaire.
-                    </p>
-                  </div>
-                </div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Dessinez vos jeux</h2>
               </div>
               
               <div className="bg-gray-50 px-4 py-6">
                 <PlayDrawer />
-              </div>
-
-              <div className="p-6 bg-white">
-                <div className="mt-8">
-                  <h3 className="text-xl font-semibold mb-4">Exemples de jeux de base</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2">1. Quick Out</h4>
-                      <p className="text-gray-600">Le receveur court 5 verges puis fait un virage rapide vers la ligne de côté.</p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2">2. Slant</h4>
-                      <p className="text-gray-600">Le receveur court en diagonale vers le centre du terrain après 2-3 verges.</p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2">3. Go Route</h4>
-                      <p className="text-gray-600">Le receveur court en ligne droite vers la zone des buts.</p>
-                    </div>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium mb-2">4. Screen Pass</h4>
-                      <p className="text-gray-600">Passe courte avec des bloqueurs devant le receveur.</p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           )}
