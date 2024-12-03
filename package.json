@@ -12,10 +12,13 @@
     "autoprefixer": "latest",
     "date-fns": "^4.1.0",
     "eslint": "latest",
+    "firebase": "11.0.2",
     "framer-motion": "^10.16.4",
     "next": "14.0.3",
     "postcss": "latest",
     "react": "18.2.0",
+    "react-dnd": "16.0.1",
+    "react-dnd-html5-backend": "16.0.1",
     "react-dom": "18.2.0",
     "tailwindcss": "latest",
     "typescript": "latest"
